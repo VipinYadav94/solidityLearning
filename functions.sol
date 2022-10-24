@@ -204,6 +204,113 @@ contract FunctionOutputs {
 
     function destructuringAssigment() public pure {
         (uint x, bool b) = returnMany();  //assigning output from a function to variable
-        (,bool b) = returnMany();  //when you only want 2nd output
+        ( ,bool b) = returnMany();  //when you only want 2nd output
+    }
+}
+
+
+contract Struct {
+    struct Car {
+        string model;
+        uint year;
+        address owner;
+    }
+
+    Car public car;
+    Car[] public cars;
+    mapping (address => Car[]) public carsByOwner;
+
+    function example() external {
+        // diff way of intilizing struct
+        Car memory Jaguar = Car("Jaguar", 2022, msg.sender);
+        Car memory Ghost = Car({model: "Rolls Royce", year: 2021, owner: msg.sender});
+        Car memory tesla;
+        tesla.model = "Y";
+        tesla.year = 2022;
+        tesla.owner =  msg.sender;
+
+        cars.push(Jaguar);
+        cars.push(Ghost);
+        cars.push(tesla);
+
+        cars.push(Car("BMW", 2021, msg.sender));
+
+        Car storage _car = cars[0];
+        _car.year = 2020;// it will update the value thats why we used storage insted of memory
+        delete _car.owner;// it will delete the value and set it to default value here it is o address
+
+        delete cars[1];// everything will be set to default value
+    }
+}
+
+// ENUM
+contract Enum {
+    enum Status {
+        None,
+        Pending,
+        Shipped,
+        Completed,
+        Rejected
+    }
+
+    Status public status;
+    struct Order {
+        address buyer;
+        Status status;
+    }
+
+    Order[] public orders;
+    function get() view returns Status {
+        return status;
+    }
+
+    function set(Status _status) external {
+        status = _status;
+    }
+
+    // for updating
+    function ship() external {
+        status = Status.Shipped;
+    }
+
+    function reset() external {
+        delete status;
+    }
+}
+
+// storage, memory and calldata
+contract DataLocations {
+    uint[] public arr;
+    mapping(uint => address) map;
+    struct MyStruct {
+        uint foo;
+    }
+    mapping(uint => MyStruct) myStructs;
+
+    function f() public {
+        // call _f with state variables
+        _f(arr, map, myStructs[1]);
+
+        // get a struct from a mapping
+        MyStruct storage myStruct = myStructs[1];
+        // create a struct in memory
+        MyStruct memory myMemStruct = MyStruct(0);
+    }
+
+    function _f(
+        uint[] storage _arr,
+        mapping(uint => address) storage _map,
+        MyStruct storage _myStruct
+    ) internal {
+        // do something with storage variables
+    }
+
+    // You can return memory variables
+    function g(uint[] memory _arr) public returns (uint[] memory) {
+        // do something with memory array
+    }
+
+    function h(uint[] calldata _arr) external {
+        // do something with calldata array
     }
 }
