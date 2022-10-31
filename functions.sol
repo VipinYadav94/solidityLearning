@@ -203,7 +203,7 @@ contract FunctionOutputs {
     }
 
     function destructuringAssigment() public pure {
-        (uint x, bool b) = returnMany();  //assigning output from a function to variable
+        // (uint x, bool b) = returnMany();  //assigning output from a function to variable
         ( ,bool b) = returnMany();  //when you only want 2nd output
     }
 }
@@ -259,10 +259,10 @@ contract Enum {
         Status status;
     }
 
-    Order[] public orders;
-    function get() view returns Status {
-        return status;
-    }
+    // Order[] public orders;
+    // function get() view returns Status {
+    //     return status;
+    // }
 
     function set(Status _status) external {
         status = _status;
